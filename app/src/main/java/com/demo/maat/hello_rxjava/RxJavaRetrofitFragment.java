@@ -12,12 +12,16 @@ import com.demo.maat.hello_rxjava.retrofit.zhihu.ZhihuDaily;
 import com.demo.maat.hello_rxjava.retrofit.zhihu.ZhihuDailyItem;
 import com.demo.maat.hello_rxjava.retrofit.zhihu.ZhihuManager;
 
+import java.util.ArrayList;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -52,15 +56,31 @@ public class RxJavaRetrofitFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
     }
+
     @OnClick(R.id.btn_get)
     public void onClick() {
+        getData();
+//        getData();
+//        getData();
+    }
 
-       subscription= ZhihuManager.getInstance()
-                .getZhihuApiService()
-                .getLastDaily()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<ZhihuDaily>() {
+    void getData() {
+        subscription = ZhihuManager.getInstance()
+                .getLastDaily()//被观察者
+                .map(new Func1<ZhihuDaily, ArrayList<ZhihuDailyItem>>() {
+                    @Override
+                    public ArrayList<ZhihuDailyItem> call(ZhihuDaily zhihuDaily) {
+                        ArrayList<ZhihuDailyItem> list = new ArrayList<ZhihuDailyItem>();
+                        if (zhihuDaily.getmZhihuDailyItems() != null)
+                            list.addAll(zhihuDaily.getmZhihuDailyItems());
+                        if (zhihuDaily.getStories() != null)
+                            list.addAll(zhihuDaily.getStories());
+                        return list;
+                    }
+                })
+                .subscribeOn(Schedulers.io())//
+                .observeOn(AndroidSchedulers.mainThread())//
+                .subscribe(new Subscriber<ArrayList<ZhihuDailyItem>>() {
                     @Override
                     public void onCompleted() {
 
@@ -72,25 +92,38 @@ public class RxJavaRetrofitFragment extends Fragment {
                     }
 
                     @Override
-                    public void onNext(ZhihuDaily daily) {
-                        //get first bean
-                        ZhihuDailyItem item=daily.getStories().get(0);
-                        printLog("Title:"+item.getTitle());
-                        printLog("Data:  "+item.getDate());
-                        printLog("Id:    "+item.getId());
-                        printLog("Type:  "+item.getType());
+                    public void onNext(ArrayList<ZhihuDailyItem> daily) {
 
+                        Observable.from(daily).filter(new Func1<ZhihuDailyItem, Boolean>() {
+                            @Override
+                            public Boolean call(ZhihuDailyItem item) {
+                                return item.ga_prefix.equals("031407");
+                            }
+                        }).subscribe(new Subscriber<ZhihuDailyItem>() {
+                            @Override
+                            public void onCompleted() {
+
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+
+                            }
+
+                            @Override
+                            public void onNext(ZhihuDailyItem item) {
+                            printLog(item.ga_prefix+":"+item.getTitle());
+                            }
+                        });
 
                     }
                 });
         mCompositeSubscription.add(subscription);
-
     }
 
     private void printLog(String s) {
-        Log.i(TAG, s );
+        Log.i(TAG, s);
     }
-
 
 
     @Override
@@ -98,7 +131,6 @@ public class RxJavaRetrofitFragment extends Fragment {
         super.onDestroy();
         mCompositeSubscription.unsubscribe();
     }
-
 
 
 }

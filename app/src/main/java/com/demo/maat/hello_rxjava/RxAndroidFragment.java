@@ -19,7 +19,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.Observable;
 import rx.Subscriber;
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.exceptions.OnErrorThrowable;
 import rx.functions.Func0;
@@ -30,8 +29,8 @@ import static android.os.Process.THREAD_PRIORITY_BACKGROUND;
 
 public class RxAndroidFragment extends Fragment {
 
-
     static final String TAG = "RxAndroidFragment";
+
     @BindView(R.id.btn_rxandroid)
     Button mBtnPolling;
     @BindView(R.id.progress_operation_two_running)
@@ -39,10 +38,7 @@ public class RxAndroidFragment extends Fragment {
 
     private Looper backgroundLooper;
 
-
-    private Subscription subscribe;
     private CompositeSubscription mCompositeSubscription;
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -104,6 +100,7 @@ public class RxAndroidFragment extends Fragment {
                 } catch (InterruptedException e) {
                     throw OnErrorThrowable.from(e);
                 }
+
                 return Observable.just("one", "two", "three", "four", "five");
             }
         });
@@ -120,6 +117,10 @@ public class RxAndroidFragment extends Fragment {
     }
 
 
+    /**
+     * Android HandlerThread 完全解析
+     * http://blog.csdn.net/lmj623565791/article/details/47079737/
+     */
     static class BackgroundThread extends HandlerThread {
         BackgroundThread() {
             super("SchedulerSample-BackgroundThread", THREAD_PRIORITY_BACKGROUND);

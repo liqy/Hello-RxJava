@@ -1,6 +1,7 @@
 package com.demo.maat.hello_rxjava;
 
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,10 +38,8 @@ public class Operators2Fragment extends Fragment {
     Button mBtnConcatmap;
     @BindView(R.id.btn_switchmap)
     Button mBtnSwitchmap;
-
-
-    private CompositeSubscription mCompositeSubscription;
     Subscription mSubscription;
+    private CompositeSubscription mCompositeSubscription;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -61,7 +60,6 @@ public class Operators2Fragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
     }
-
 
 
     @OnClick({R.id.btn_buffer, R.id.btn_flarmap, R.id.btn_concatmap, R.id.btn_switchmap})
@@ -93,38 +91,41 @@ public class Operators2Fragment extends Fragment {
 
                 return Observable.from(new Integer[]{integer, integer / 2}).delay(delay, TimeUnit.MILLISECONDS);
             }
-        }).observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<Integer>() {
-            @Override
-            public void call(Integer integer) {
-                printLog("Switch Next"+integer);
-            }
-        });
+        }).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Integer>() {
+                    @Override
+                    public void call(Integer integer) {
+                        printLog("Switch Next" + integer);
+                    }
+                });
     }
 
     //与flatmap大致相同,只是产生的顺序不同;
     private void doConcatmap() {
-        Observable.just(10, 20, 30).concatMap(new Func1<Integer, Observable<Integer>>() {
-            @Override
-            public Observable<Integer> call(Integer integer) {
-                //10的延迟执行时间为200毫秒、20和30的延迟执行时间为180毫秒
-                int delay = 200;
-                if (integer > 10)
-                    delay = 180;
+        Observable.just(10, 20, 30)
+                .concatMap(new Func1<Integer, Observable<Integer>>() {
+                    @Override
+                    public Observable<Integer> call(Integer integer) {
+                        //10的延迟执行时间为200毫秒、20和30的延迟执行时间为180毫秒
+                        int delay = 200;
+                        if (integer > 10)
+                            delay = 180;
 
-                return Observable.from(new Integer[]{integer, integer / 2}).delay(delay, TimeUnit.MILLISECONDS);
-            }
-        }).observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<Integer>() {
-            @Override
-            public void call(Integer integer) {
-                printLog("Concat Next"+integer);
-            }
-        });
+                        return Observable.from(new Integer[]{integer, integer / 2}).delay(delay, TimeUnit.MILLISECONDS);
+                    }
+                }).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Integer>() {
+                    @Override
+                    public void call(Integer integer) {
+                        printLog("Concat Next" + integer);
+                    }
+                });
 
     }
 
     //与map一样,都是对数据转化,map是一对一,flatmap一对多;
     private void doflatMap() {
-        Bean bean=new Bean();
+        Bean bean = new Bean();
         Observable.just(bean)
                 .flatMap(new Func1<Bean, Observable<String>>() {
                     @Override
@@ -136,7 +137,7 @@ public class Operators2Fragment extends Fragment {
                 .subscribe(new Action1<String>() {
                     @Override
                     public void call(String s) {
-                        printLog("Flat Next"+s);
+                        printLog("Flat Next" + s);
                     }
                 });
 
@@ -144,52 +145,56 @@ public class Operators2Fragment extends Fragment {
 
     //一共发送10次信息,Observable每次缓存3秒一起发送
     private void doBufferOperation() {
-        mSubscription=Observable.create(new Observable.OnSubscribe<String>() {
+        mSubscription = Observable.create(new Observable.OnSubscribe<String>() {
             @Override
             public void call(Subscriber<? super String> subscriber) {
-                for (int i = 0; i <10   ; i++) {
-                    subscriber.onNext(" "+i);
+                for (int i = 0; i < 10; i++) {
+                    subscriber.onNext(" " + i);
                     try {
-                        Thread.sleep(1000);
+                        Thread.sleep(5000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }
             }
         }).subscribeOn(Schedulers.io())
-                 .buffer(3,TimeUnit.SECONDS)
-                 .subscribe(new Action1<List<String>>() {
-                     @Override
-                     public void call(List<String> list) {
-                         printLog("接收到 "+list.size()+"次");
-                         for (int i = 0; i < list.size(); i++){
-                             printLog(list.get(i));
-                         }
+                .buffer(5, TimeUnit.SECONDS)
+                .subscribe(new Action1<List<String>>() {
+                    @Override
+                    public void call(List<String> list) {
+                        printLog("接收到 " + list.size() + "次");
+                        for (int i = 0; i < list.size(); i++) {
+                            printLog(list.get(i));
+                        }
 
-                     }
-                 });
+                    }
+                });
         mCompositeSubscription.add(mSubscription);
 
-
     }
-
-    private class Bean{
-        String[] data={"1","2","3"};
-
-        public String[] getData(){
-            return data;
-        }
-    }
-
 
     private void printLog(String s) {
-        Log.i(TAG, s);
+        Log.i(TAG, s+getThreadMessage());
+    }
+
+    private String getThreadMessage() {
+        if (Looper.myLooper() == Looper.getMainLooper())
+            return " MainThread";
+        else return " Not-MainThread";
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         mCompositeSubscription.unsubscribe();
+    }
+
+    private class Bean {
+        String[] data = {"1", "2", "3"};
+
+        public String[] getData() {
+            return data;
+        }
     }
 }
 

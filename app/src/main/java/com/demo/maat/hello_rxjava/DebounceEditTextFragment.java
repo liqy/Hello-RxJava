@@ -29,7 +29,7 @@ public class DebounceEditTextFragment extends Fragment {
 
     @BindView(R.id.edit_search)
     EditText mEditSearch;
-    int N=0;
+    int N = 0;
     private Subscription subscribe;
     private CompositeSubscription mCompositeSubscription;
     ;
@@ -55,11 +55,10 @@ public class DebounceEditTextFragment extends Fragment {
     }
 
 
-
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        subscribe= RxTextView.textChangeEvents(mEditSearch)//
+        subscribe = RxTextView.textChangeEvents(mEditSearch)//
                 .debounce(400, TimeUnit.MILLISECONDS)// default Scheduler is Computation
                 .observeOn(AndroidSchedulers.mainThread())//
                 .subscribe(new Observer<TextViewTextChangeEvent>() {
@@ -75,7 +74,7 @@ public class DebounceEditTextFragment extends Fragment {
 
                                @Override
                                public void onNext(TextViewTextChangeEvent onTextChangeEvent) {
-                                printLog(onTextChangeEvent.text().toString());
+                                   printLog(onTextChangeEvent.text().toString());
                                }
                            }
                 );

@@ -46,8 +46,6 @@ public class RxJavaRetrofitActivity extends SampleActivityBase {
     }
 
 
-
-
     @Override
     public void initializeLogging() {
         LogWrapper logWrapper = new LogWrapper();

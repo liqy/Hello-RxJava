@@ -2,10 +2,13 @@ package com.demo.maat.hello_rxjava.retrofit.zhihu;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Arrays;
+
 /**
  * Created by 蔡小木 on 2016/3/6 0006.
  */
-public class ZhihuDailyItem{
+public class ZhihuDailyItem {
+    public boolean hasFadedIn = false;
     @SerializedName("images")
     private String[] images;
     @SerializedName("type")
@@ -15,7 +18,7 @@ public class ZhihuDailyItem{
     @SerializedName("title")
     private String title;
     private String date;
-    public boolean hasFadedIn = false;
+    public String ga_prefix;
 
     public String[] getImages() {
         return images;
@@ -55,5 +58,18 @@ public class ZhihuDailyItem{
 
     public void setDate(String date) {
         this.date = date;
+    }
+
+    @Override
+    public String toString() {
+        return "ZhihuDailyItem{" +
+                "hasFadedIn=" + hasFadedIn +
+                ", images=" + Arrays.toString(images) +
+                ", type=" + type +
+                ", id='" + id + '\'' +
+                ", title='" + title + '\'' +
+                ", date='" + date + '\'' +
+                ", ga_prefix='" + ga_prefix + '\'' +
+                '}';
     }
 }

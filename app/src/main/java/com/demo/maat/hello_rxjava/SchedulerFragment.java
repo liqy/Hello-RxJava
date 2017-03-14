@@ -31,6 +31,7 @@ public class SchedulerFragment extends Fragment {
     String[] data = {"1", "2", "3"};
     @BindView(R.id.btn_no_map)
     Button mBtnNoMap;
+
     @BindView(R.id.btn_just)
     Button mBtnJust;
     @BindView(R.id.btn_just_one)
@@ -83,9 +84,9 @@ public class SchedulerFragment extends Fragment {
     }
 
 
-    @OnClick({R.id.btn_just, R.id.btn_just_one,  R.id.btn_just_two,
-            R.id.btn_just_three,R.id.btn_just_four, R.id.btn_just_five,
-            R.id.btn_just_six,R.id.btn_no_map, R.id.btn_one_map, R.id.btn_two_map, R.id.btn_long_operation})
+    @OnClick({R.id.btn_just, R.id.btn_just_one, R.id.btn_just_two,
+            R.id.btn_just_three, R.id.btn_just_four, R.id.btn_just_five,
+            R.id.btn_just_six, R.id.btn_no_map, R.id.btn_one_map, R.id.btn_two_map, R.id.btn_long_operation})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_just:
@@ -125,36 +126,37 @@ public class SchedulerFragment extends Fragment {
     }
 
 
-
     private void doJust() {
-        Observable.just(1, 2, 3)
-                .subscribe(new Subscriber<Integer>() {
-                    @Override
-                    public void onCompleted() {
-                        printLog("Completed");
-                    }
+        //被观察者
+        Observable<Integer> observable = Observable.just(1, 2, 3);
 
-                    @Override
-                    public void onError(Throwable e) {
-                        printLog("onError");
+        //观察者
+        Subscriber<Integer> subscriber = new Subscriber<Integer>() {
+            @Override
+            public void onCompleted() {
+                printLog("Completed");
+            }
 
-                    }
+            @Override
+            public void onError(Throwable e) {
+                printLog("onError");
 
-                    @Override
-                    public void onNext(Integer integer) {
-                        printLog("Next " + integer + " ");
-                    }
-                });
+            }
+
+            @Override
+            public void onNext(Integer integer) {
+                printLog("Next Final" + integer + " ");
+            }
+        };
+
+        //关联
+        observable.subscribe(subscriber);
     }
-
-
-
-
 
 
     private void doJustOne() {
         Observable.just(1, 2, 3)
-                .subscribeOn(Schedulers.io())
+                .subscribeOn(Schedulers.io())//在子线程
                 .subscribe(new Subscriber<Integer>() {
                     @Override
                     public void onCompleted() {
@@ -170,11 +172,10 @@ public class SchedulerFragment extends Fragment {
                     @Override
                     public void onNext(Integer integer) {
                         printLog("Next " + integer + " ");
+
                     }
                 });
     }
-
-
 
 
     private void doJustTwo() {
@@ -201,17 +202,14 @@ public class SchedulerFragment extends Fragment {
     }
 
 
-
-
-
     private void doJustThree() {
         Observable.just(1, 2, 3)
                 .subscribeOn(Schedulers.io())
                 .map(new Func1<Integer, String>() {
                     @Override
                     public String call(Integer integer) {
-                        printLog("map "+integer+"a");
-                        return integer+"a";
+                        printLog("map " + integer + "a");
+                        return integer + "abb";
                     }
                 })
                 .subscribe(new Subscriber<String>() {
@@ -228,28 +226,29 @@ public class SchedulerFragment extends Fragment {
 
                     @Override
                     public void onNext(String s) {
-                        printLog("Next " +s);
+                        printLog("Next " + s);
 
                     }
 
                 });
     }
+
     private void doJustFour() {
         Observable.just(1, 2, 3)
                 .subscribeOn(Schedulers.io())
                 .map(new Func1<Integer, String>() {
                     @Override
                     public String call(Integer integer) {
-                        printLog("map1 "+integer+"a");
-                        return integer+"a";
+                        printLog("map1 " + integer + "a");
+                        return integer + "a";
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(new Func1<String, String>() {
                     @Override
                     public String call(String s) {
-                        printLog("map2 "+s+"b ");
-                        return s+"b";
+                        printLog("map2 " + s + "b ");
+                        return s + "b";
                     }
                 })
                 .subscribe(new Subscriber<String>() {
@@ -261,25 +260,15 @@ public class SchedulerFragment extends Fragment {
                     @Override
                     public void onError(Throwable e) {
                         printLog("onError");
-
                     }
 
                     @Override
                     public void onNext(String s) {
-                        printLog("Next " +s);
-
+                        printLog("Next " + s);
                     }
 
                 });
     }
-
-
-
-
-
-
-
-
 
 
     private void doJustFive() {
@@ -288,24 +277,24 @@ public class SchedulerFragment extends Fragment {
                 .map(new Func1<Integer, String>() {
                     @Override
                     public String call(Integer integer) {
-                        printLog("map1 "+integer+"a");
-                        return integer+"a";
+                        printLog("map1 " + integer + "a");
+                        return integer + "a";
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(new Func1<String, String>() {
                     @Override
                     public String call(String s) {
-                        printLog("map2 "+s+"b ");
-                        return s+"b";
+                        printLog("map2 " + s + "b ");
+                        return s + "b";
                     }
                 })
                 .observeOn(Schedulers.io())
                 .map(new Func1<String, String>() {
                     @Override
                     public String call(String s) {
-                        printLog("map3 "+s+"c ");
-                        return s+"c";
+                        printLog("map3 " + s + "c ");
+                        return s + "c";
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
@@ -323,15 +312,12 @@ public class SchedulerFragment extends Fragment {
 
                     @Override
                     public void onNext(String s) {
-                        printLog("Next " +s);
+                        printLog("Next " + s);
 
                     }
 
                 });
     }
-
-
-
 
 
     private void doJustSix() {
@@ -340,24 +326,24 @@ public class SchedulerFragment extends Fragment {
                 .map(new Func1<Integer, String>() {
                     @Override
                     public String call(Integer integer) {
-                        printLog("map1 "+integer+"a");
-                        return integer+"a";
+                        printLog("map1 " + integer + "a");
+                        return integer + "a";
                     }
                 })
                 .observeOn(Schedulers.io())
                 .map(new Func1<String, String>() {
                     @Override
                     public String call(String s) {
-                        printLog("map2 "+s+"b ");
-                        return s+"b";
+                        printLog("map2 " + s + "b ");
+                        return s + "b";
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(new Func1<String, String>() {
                     @Override
                     public String call(String s) {
-                        printLog("map3 "+s+"c ");
-                        return s+"c";
+                        printLog("map3 " + s + "c ");
+                        return s + "c";
                     }
                 })
                 .subscribeOn(Schedulers.io())
@@ -367,14 +353,16 @@ public class SchedulerFragment extends Fragment {
                     public void onCompleted() {
                         printLog("Completed");
                     }
+
                     @Override
                     public void onError(Throwable e) {
                         printLog("onError");
 
                     }
+
                     @Override
                     public void onNext(String s) {
-                        printLog("Next " +s);
+                        printLog("Next " + s);
 
                     }
 
@@ -384,7 +372,6 @@ public class SchedulerFragment extends Fragment {
 
     /**
      * Subscriber加Onsubscribe基本使用,没有线程切换,没有过滤等操作
-     *
      */
 
     private void doBaseOperation() {

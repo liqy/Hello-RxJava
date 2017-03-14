@@ -36,7 +36,6 @@ public class RxAndroidActivity extends SampleActivityBase {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.scheduler_activity_main);
-
         if (savedInstanceState == null) {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             RxAndroidFragment fragment = new RxAndroidFragment();
@@ -44,9 +43,6 @@ public class RxAndroidActivity extends SampleActivityBase {
             transaction.commit();
         }
     }
-
-
-
 
     @Override
     public void initializeLogging() {

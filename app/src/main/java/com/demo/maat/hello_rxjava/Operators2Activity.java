@@ -46,8 +46,6 @@ public class Operators2Activity extends SampleActivityBase {
     }
 
 
-
-
     @Override
     public void initializeLogging() {
         LogWrapper logWrapper = new LogWrapper();

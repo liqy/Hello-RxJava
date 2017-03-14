@@ -11,16 +11,18 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+/**
+ *
+ */
 public class MainActivity extends AppCompatActivity {
 
-
-    @Nullable @BindView(R.id.btn_rxjava)
+    @Nullable
+    @BindView(R.id.btn_rxjava)
     Button mBtnRxjava;
     @BindView(R.id.btn_retrofit)
     Button mBtnRetrofit;
     @BindView(R.id.btn_rxandroid)
     Button mBtnRxAndroid;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,19 +33,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    @OnClick({R.id.btn_rxjava, R.id.btn_retrofit,R.id.btn_rxandroid})
+    @OnClick({R.id.btn_rxjava, R.id.btn_retrofit, R.id.btn_rxandroid})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_rxjava:
-                Intent intent=new Intent(MainActivity.this,RxJavaMainActivity.class);
+                Intent intent = new Intent(MainActivity.this, RxJavaMainActivity.class);
                 startActivity(intent);
                 break;
             case R.id.btn_retrofit:
-                Intent retrofit=new Intent(MainActivity.this,RxJavaRetrofitActivity.class);
+                Intent retrofit = new Intent(MainActivity.this, RxJavaRetrofitActivity.class);
                 startActivity(retrofit);
                 break;
             case R.id.btn_rxandroid:
-                Intent rxandroid=new Intent(MainActivity.this,RxAndroidActivity.class);
+                Intent rxandroid = new Intent(MainActivity.this, RxAndroidActivity.class);
                 startActivity(rxandroid);
                 break;
         }

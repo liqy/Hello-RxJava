@@ -46,8 +46,6 @@ public class PollingActivity extends SampleActivityBase {
     }
 
 
-
-
     @Override
     public void initializeLogging() {
         LogWrapper logWrapper = new LogWrapper();

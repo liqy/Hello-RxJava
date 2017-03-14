@@ -30,7 +30,7 @@ public class PollingFragment extends Fragment {
     @BindView(R.id.btn_polling)
     Button mBtnPolling;
 
-    int N=0;
+    int N = 0;
     private Subscription subscribe;
     private CompositeSubscription mCompositeSubscription;
 
@@ -59,7 +59,7 @@ public class PollingFragment extends Fragment {
     public void onClick() {
 
         //此处有bug,subscribe无法释放,望高人pull requests
-        subscribe=Observable.create(new Observable.OnSubscribe<String>() {
+        subscribe = Observable.create(new Observable.OnSubscribe<String>() {
             @Override
             public void call(final Subscriber<? super String> observer) {
 
@@ -67,19 +67,20 @@ public class PollingFragment extends Fragment {
                         .schedulePeriodically(new Action0() {
                             @Override
                             public void call() {
-                                observer.onNext(" "+(N++));
+                                observer.onNext(" " + (N++));
                             }
                         }, 0, 1000, TimeUnit.MILLISECONDS);
             }
         })
                 .subscribe(new Action1<String>() {
-            @Override
-            public void call(String s) {
-            printLog("polling"+s);
-            }
-        });
+                    @Override
+                    public void call(String s) {
+                        printLog("polling" + s);
+                    }
+                });
         mCompositeSubscription.add(subscribe);
     }
+
     private void printLog(String s) {
         Log.i(TAG, s);
     }

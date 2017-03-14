@@ -12,7 +12,6 @@ import butterknife.OnClick;
 
 public class RxJavaMainActivity extends AppCompatActivity {
 
-
     @BindView(R.id.btn_scheduler)
     Button mBtnScheduler;
     @BindView(R.id.btn_operators1)
@@ -24,7 +23,6 @@ public class RxJavaMainActivity extends AppCompatActivity {
     @BindView(R.id.btn_operators4)
     Button mBtnOperators4;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,10 +30,7 @@ public class RxJavaMainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
     }
 
-
-
-
-    @OnClick({R.id.btn_scheduler,R.id.btn_operators1, R.id.btn_operators2, R.id.btn_operators3, R.id.btn_operators4, R.id.activity_main})
+    @OnClick({R.id.btn_scheduler, R.id.btn_operators1, R.id.btn_operators2, R.id.btn_operators3, R.id.btn_operators4, R.id.activity_main})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_scheduler:

@@ -47,7 +47,6 @@ public class Operators1Fragment extends Fragment {
 
 
     private CompositeSubscription mCompositeSubscription;
-    ;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -102,20 +101,20 @@ public class Operators1Fragment extends Fragment {
      */
 
     private void doRangeOperation() {
-        Subscription rangeSub =Observable.range(3,10).subscribe(new Subscriber<Integer>() {
+        Subscription rangeSub = Observable.range(3, 10).subscribe(new Subscriber<Integer>() {
             @Override
             public void onCompleted() {
-            printLog("Completed");
+                printLog("Completed");
             }
 
             @Override
             public void onError(Throwable e) {
-            printLog("Error");
+                printLog("Error");
             }
 
             @Override
             public void onNext(Integer i) {
-            printLog("Next"+i);
+                printLog("Next" + i);
             }
         });
         mCompositeSubscription.add(rangeSub);
@@ -127,7 +126,7 @@ public class Operators1Fragment extends Fragment {
      */
     private void doTimerOperation() {
 
-        Subscription timerSub=Observable.timer(1, 1, TimeUnit.SECONDS).subscribe(new Subscriber<Long>() {
+        Subscription timerSub = Observable.timer(1, 1, TimeUnit.SECONDS).subscribe(new Subscriber<Long>() {
             @Override
             public void onCompleted() {
                 printLog("Completed");
@@ -147,7 +146,7 @@ public class Operators1Fragment extends Fragment {
     }
 
     private void doIntervalOperation() {
-        Subscription intervalSub=Observable.interval(1, TimeUnit.SECONDS).subscribe(new Subscriber<Long>() {
+        Subscription intervalSub = Observable.interval(1, TimeUnit.SECONDS).subscribe(new Subscriber<Long>() {
             @Override
             public void onCompleted() {
                 printLog("Completed");
@@ -208,6 +207,7 @@ public class Operators1Fragment extends Fragment {
             }
         });
     }
+
     // 从1开始输出3个数,重复2次
     private void doRepeatOperation() {
         Observable.range(1, 3).repeat(2).subscribe(new Subscriber<Integer>() {

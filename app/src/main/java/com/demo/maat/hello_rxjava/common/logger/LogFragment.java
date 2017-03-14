@@ -51,7 +51,8 @@ public class LogFragment extends Fragment {
     private LogView mLogView;
     private ScrollView mScrollView;
 
-    public LogFragment() {}
+    public LogFragment() {
+    }
 
     public View inflateViews() {
         mScrollView = new ScrollView(getActivity());
@@ -91,16 +92,18 @@ public class LogFragment extends Fragment {
 
         mLogView.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
 
             @Override
             public void afterTextChanged(Editable s) {
                 //afterTextChanged 在 text发生改变后马上被调用，此时可能text还未被绘制，导致无法滑动到最底部
                 //所以不能直接调用，而应该使用post
-                mScrollView.post(new Runnable(){
+                mScrollView.post(new Runnable() {
                     @Override
                     public void run() {
                         mScrollView.fullScroll(ScrollView.FOCUS_DOWN);

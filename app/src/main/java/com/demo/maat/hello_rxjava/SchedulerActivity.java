@@ -31,7 +31,6 @@ public class SchedulerActivity extends SampleActivityBase {
 
     public static final String TAG = "SchedulerActivity";
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,9 +43,6 @@ public class SchedulerActivity extends SampleActivityBase {
             transaction.commit();
         }
     }
-
-
-
 
     @Override
     public void initializeLogging() {
