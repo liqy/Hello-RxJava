@@ -18,12 +18,15 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.Observable;
+import rx.Observer;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
+
+//import rx.Observable;
 
 
 public class RxJavaRetrofitFragment extends Fragment {
@@ -60,8 +63,6 @@ public class RxJavaRetrofitFragment extends Fragment {
     @OnClick(R.id.btn_get)
     public void onClick() {
         getData();
-//        getData();
-//        getData();
     }
 
     void getData() {
@@ -78,9 +79,21 @@ public class RxJavaRetrofitFragment extends Fragment {
                         return list;
                     }
                 })
+                .flatMap(new Func1<ArrayList<ZhihuDailyItem>, Observable<ZhihuDailyItem>>() {
+                    @Override
+                    public Observable<ZhihuDailyItem> call(ArrayList<ZhihuDailyItem> items) {
+                        return Observable.from(items);//生成被观察者
+                    }
+                })
+                .filter(new Func1<ZhihuDailyItem, Boolean>() {
+                    @Override
+                    public Boolean call(ZhihuDailyItem item) {
+                        return item.ga_prefix.equals("031607");
+                    }
+                })
                 .subscribeOn(Schedulers.io())//
                 .observeOn(AndroidSchedulers.mainThread())//
-                .subscribe(new Subscriber<ArrayList<ZhihuDailyItem>>() {
+                .subscribe(new Subscriber<ZhihuDailyItem>() {
                     @Override
                     public void onCompleted() {
 
@@ -92,30 +105,8 @@ public class RxJavaRetrofitFragment extends Fragment {
                     }
 
                     @Override
-                    public void onNext(ArrayList<ZhihuDailyItem> daily) {
-
-                        Observable.from(daily).filter(new Func1<ZhihuDailyItem, Boolean>() {
-                            @Override
-                            public Boolean call(ZhihuDailyItem item) {
-                                return item.ga_prefix.equals("031407");
-                            }
-                        }).subscribe(new Subscriber<ZhihuDailyItem>() {
-                            @Override
-                            public void onCompleted() {
-
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-
-                            }
-
-                            @Override
-                            public void onNext(ZhihuDailyItem item) {
-                            printLog(item.ga_prefix+":"+item.getTitle());
-                            }
-                        });
-
+                    public void onNext(ZhihuDailyItem item) {
+                        printLog(item.getTitle());
                     }
                 });
         mCompositeSubscription.add(subscription);
